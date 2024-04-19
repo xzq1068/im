@@ -1,61 +1,68 @@
+use std::error::Error;
 use std::future::Future;
 use anyhow::anyhow;
 use axum::http::header::AUTHORIZATION;
 use axum::http::HeaderMap;
 use axum::Json;
+use axum::response::Response;
 use log::{error, info};
 use serde::{Deserialize, Serialize};
 
 use common::util::jwt;
+use crate::db::user::User;
+use crate::error::HandlerError;
 
-use crate::handler::ResponseResult;
+use crate::handler::{ ResponseResult};
 use crate::redis::redis_client::RedisOps;
 use crate::redis::USER_TOKEN;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct LoginReq {
-    pub account_id: u32,
+    pub account_id: i32,
     pub credential: String,
 }
 
 
-pub async fn login(header_map: HeaderMap,login_req: Json<LoginReq>) ->Json<ResponseResult<'static, String>> {
-    let header = header_map.get(AUTHORIZATION).to_owned().unwrap().to_str().unwrap();
+pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) -> anyhow::Result<Json<ResponseResult<'static,String>>,Json<ResponseResult<'static,String>>> {
     //1. 查看缓存是否命中
-    // let redis_ops=RedisOps::connect().await.unwrap();
+    let redis_ops = RedisOps::connect().await.unwrap();
 
-    // match verify_user(&header_map,redis_ops).await {
-    //     Ok(_) => {
-    //         return Json(
-    //             ResponseResult {
-    //                 code: 200,
-    //                 message: "ok",
-    //                 timestamp: 11111,
-    //                 data: header_map.get("adsfa").map(|h| h.to_str().unwrap().to_owned()).unwrap_or_default()
-    //             }
-    //         );
-    //     }
-    //     Err(err)=>{
-    //         info!("direct login failed: {}.", err.to_string());
-    //     }
-    // }
-
-    info!("{:#?}",header_map);
-
-    info!("{:#?}",login_req);
-
-    Json(
-        ResponseResult{
-            code:200,
-            message:"ok",
-            timestamp: 123,
-            data:header.to_string()
+    match verify_user(&header_map, redis_ops).await {
+        Ok(_) => {
+            return Ok(
+                Json(
+                    ResponseResult {
+                        code: "200",
+                        message: "ok".to_string(),
+                        timestamp: 11111,
+                        data: header_map.get(AUTHORIZATION).to_owned().unwrap().to_str().unwrap().to_string(),
+                    }
+                )
+            );
         }
-    )
+        Err(err) => {
+            error!("direct login failed: {}.", err.to_string());
+        }
+    }
 
+    // let user = match User::get_by_account_id(login_req.account_id).await {
+    //     Ok(user) => user,
+    //     Err(err) => {
+    //         return Err("");
+    //     }
+    // };
+
+    Ok(Json(
+        ResponseResult {
+            code: "200",
+            message: "ok".to_string(),
+            timestamp: 123,
+            data: "123".to_string(),
+        }
+    ))
 }
 
-pub async fn verify_user(headers: &HeaderMap, mut redis_ops: RedisOps) -> anyhow:: Result<u64> {
+pub async fn verify_user(headers: &HeaderMap, mut redis_ops: RedisOps) -> anyhow::Result<u64> {
     let token = match headers.get(AUTHORIZATION) {
         None => { return Err(anyhow!("token is not empty!")); }
         Some(token) => {

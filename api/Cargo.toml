@@ -8,10 +8,12 @@ edition = "2021"
 [dependencies]
 common = { path = "../common" }
 axum = { workspeace = true }
+tower = { workspeace = true}
+tower-http = { workspeace = true,features = ["trace"] }
 tokio = { workspeace = true, features = ["full"] }
 toml = { workspeace = true }
 log = { workspeace = true }
-tracing = { workspeace = true }
+tracing = { workspeace = true,features = [] }
 tracing-subscriber = { workspeace = true }
 serde = { workspeace = true, features = ["derive"] }
 lazy_static = { workspeace = true }

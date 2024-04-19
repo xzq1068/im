@@ -34,7 +34,7 @@ pub enum UserStatus {
 
 impl User{
 
-    pub async fn get_by_account_id(account_id: i64)->anyhow::Result<Self> {
+    pub async fn get_by_account_id(account_id: i32)->anyhow::Result<Self> {
 
         let user = sqlx::query_as("SELECT id, account_id, credential, salt, nickname, avatar, signature, status, info, create_at, update_at, delete_at FROM api.user \
         WHERE account_id = $1")
