@@ -1,0 +1,20 @@
+[package]
+name = "api"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+common = { path = "../common" }
+axum = { workspeace = true }
+tokio = { workspeace = true, features = ["full"] }
+toml = { workspeace = true }
+log = { workspeace = true }
+tracing = { workspeace = true }
+tracing-subscriber = { workspeace = true }
+serde = { workspeace = true, features = ["derive"] }
+lazy_static = { workspeace = true }
+sqlx = {workspeace = true, features = ["runtime-tokio-rustls", "postgres", "chrono"]}
+redis = { workspeace = true,features = ["tokio-comp"]}
+anyhow = { workspeace = true }
