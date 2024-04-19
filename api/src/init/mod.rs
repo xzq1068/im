@@ -37,5 +37,5 @@ pub(super) fn init() {
 
 pub(super) fn server_start_log() {
     println!("{}", common::banner::api_banner());
-    info!("Api Server start success, {}/{}","127.0.0.1",API_CONFIG.server.port);
+    info!("✅ Api Server start success, {}/{}","127.0.0.1",API_CONFIG.server.port);
 }

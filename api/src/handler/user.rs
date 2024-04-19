@@ -19,27 +19,26 @@ pub struct LoginReq {
 }
 
 
-pub async fn login(header_map: &HeaderMap,login_req: Json<LoginReq>) ->Json<ResponseResult<&'static str>> {
-
+pub async fn login(header_map: HeaderMap,login_req: Json<LoginReq>) ->Json<ResponseResult<'static, String>> {
+    let header = header_map.get(AUTHORIZATION).to_owned().unwrap().to_str().unwrap();
     //1. 查看缓存是否命中
-    let redis_ops=RedisOps::connect().await.unwrap();
+    // let redis_ops=RedisOps::connect().await.unwrap();
 
-    match verify_user(&header_map,redis_ops).await {
-        Ok(_) => {
-            let data = header_map.get(AUTHORIZATION).unwrap().to_str().unwrap().clone();
-            return Json(
-                ResponseResult {
-                    code: 200,
-                    message: "ok",
-                    timestamp:11111,
-                    data: data
-                }
-            );
-        }
-        Err(err)=>{
-            info!("direct login failed: {}.", err.to_string());
-        }
-    }
+    // match verify_user(&header_map,redis_ops).await {
+    //     Ok(_) => {
+    //         return Json(
+    //             ResponseResult {
+    //                 code: 200,
+    //                 message: "ok",
+    //                 timestamp: 11111,
+    //                 data: header_map.get("adsfa").map(|h| h.to_str().unwrap().to_owned()).unwrap_or_default()
+    //             }
+    //         );
+    //     }
+    //     Err(err)=>{
+    //         info!("direct login failed: {}.", err.to_string());
+    //     }
+    // }
 
     info!("{:#?}",header_map);
 
@@ -50,7 +49,7 @@ pub async fn login(header_map: &HeaderMap,login_req: Json<LoginReq>) ->Json<Resp
             code:200,
             message:"ok",
             timestamp: 123,
-            data:"String"
+            data:header.to_string()
         }
     )
 
@@ -70,7 +69,7 @@ pub async fn verify_user(headers: &HeaderMap, mut redis_ops: RedisOps) -> anyhow
     };
 
     let redis_key = format!("{}{}", USER_TOKEN, user_id);
-    let token_key: String = match redis_ops.get::<String>(&redis_key) {
+    let token_key: String = match redis_ops.get::<String>(&redis_key).await {
         Ok(token_key) => token_key,
         Err(_err) => { return Err(anyhow!("user not login")); }
     };
