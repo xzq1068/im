@@ -18,3 +18,6 @@ lazy_static = { workspeace = true }
 sqlx = {workspeace = true, features = ["runtime-tokio-rustls", "postgres", "chrono"]}
 redis = { workspeace = true,features = ["tokio-comp"]}
 anyhow = { workspeace = true }
+chrono = { workspeace = true ,features = ["serde"]}
+num-derive =  { workspeace = true }
+serde_json =  { workspeace = true }
