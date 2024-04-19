@@ -13,7 +13,7 @@ pub mod user;
 pub struct ResponseResult<'s,T> where T: Send + Sync
 {
     timestamp: i64,
-    message: String,
+    message: &'s str,
     code: &'s str,
     data: T,
 

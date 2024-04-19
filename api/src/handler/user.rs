@@ -33,7 +33,7 @@ pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) -> anyhow::
                 Json(
                     ResponseResult {
                         code: "200",
-                        message: "ok".to_string(),
+                        message: "ok",
                         timestamp: 11111,
                         data: header_map.get(AUTHORIZATION).to_owned().unwrap().to_str().unwrap().to_string(),
                     }
@@ -55,7 +55,7 @@ pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) -> anyhow::
     Ok(Json(
         ResponseResult {
             code: "200",
-            message: "ok".to_string(),
+            message: "ok",
             timestamp: 123,
             data: "123".to_string(),
         }
