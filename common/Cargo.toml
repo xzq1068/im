@@ -6,3 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow =  { workspeace = true }
+base64 =  { workspeace = true }
+chrono =  { workspeace = true }
+serde =  { workspeace = true }
+jsonwebtoken =  { workspeace = true }
+serde_json = { workspeace = true }

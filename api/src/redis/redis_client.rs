@@ -1,6 +1,7 @@
 use anyhow::anyhow;
 use redis::{AsyncCommands, Client, FromRedisValue, RedisResult};
 use redis::aio::MultiplexedConnection;
+use crate::init::API_CONFIG;
 
 type Result<T> = anyhow::Result<T>;
 #[derive(Clone)]
@@ -9,14 +10,14 @@ pub struct RedisOps {
 }
 
 impl RedisOps {
-    pub async fn connect(addrs: &str, password: &str) ->Result<RedisOps> {
-        let address = format!("redis://:{}@{}/", password, addrs);
+    pub async fn connect() ->Result<RedisOps> {
+        let address = format!("redis://:{}@{}/", API_CONFIG.redis.password, API_CONFIG.redis.address);
 
         let client = Client::open(address)?;
 
         let mut con = client.get_multiplexed_async_connection().await?;
 
-        Ok((RedisOps { connection: con }))
+        Ok(RedisOps{connection:con})
     }
 
     pub async fn set(&mut self, key: &str, value: &str) -> Result<()>
@@ -62,7 +63,8 @@ mod tests{
 
     #[tokio::test]
     async fn test_connect() {
-        let redis_ops = RedisOps::connect("175.24.165.137:16379", "xzq@17630061068").await;
+        let mut redis_ops = RedisOps::connect().await;
+
         match redis_ops {
             Ok(_) => {
                 println!("连接成功");
@@ -75,7 +77,7 @@ mod tests{
 
     #[tokio::test]
     async fn test_set() {
-        let mut redis_ops = RedisOps::connect("175.24.165.137:16379", "xzq@17630061068").await.unwrap();
+        let mut redis_ops = RedisOps::connect().await.unwrap();
 
         let res=redis_ops.set("k1", "xzq-rs").await;
 
@@ -91,7 +93,7 @@ mod tests{
 
     #[tokio::test]
     async fn test_set_exp() {
-        let mut redis_ops = RedisOps::connect("175.24.165.137:16379", "xzq@17630061068").await.unwrap();
+        let mut redis_ops = RedisOps::connect().await.unwrap();
 
         let res = redis_ops.set_ex("k1", "xzq-rs", 100).await;
 
@@ -107,7 +109,7 @@ mod tests{
 
     #[tokio::test]
     async fn test_get() {
-        let mut redis_ops = RedisOps::connect("175.24.165.137:16379", "xzq@17630061068").await.unwrap();
+        let mut redis_ops = RedisOps::connect().await.unwrap();
 
         let res= redis_ops.get::<std::string::String>("k1").await;
 

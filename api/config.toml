@@ -10,8 +10,8 @@ pool_max_connection=100
 
 
 [redis]
-address=""
-password=""
+address="175.24.165.137:16379"
+password="xzq@17630061068"
 
 
 
