@@ -1,4 +1,4 @@
-use axum::Router;
+use axum::{Router, ServiceExt};
 use axum::routing::{get, post};
 use tower::ServiceBuilder;
 use tower_http::trace::TraceLayer;
@@ -21,11 +21,11 @@ async fn main() {
     //启动axum web服务器
     let app = Router::new()
         .route("/login", post(handler::user::login))
+        .route("/test", get(handler::user::test))
         .layer(
             ServiceBuilder::new()
                 .layer(TraceLayer::new_for_http())
-        )
-    ;
+        );
 
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:7002").await.unwrap();

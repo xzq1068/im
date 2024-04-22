@@ -12,10 +12,10 @@ pub mod user;
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct ResponseResult<'s,T> where T: Send + Sync
 {
-    timestamp: i64,
-    message: &'s str,
-    code: &'s str,
-    data: T,
+   pub timestamp: i64,
+   pub message: &'s str,
+   pub code: &'s str,
+   pub data: T,
 
 }
 

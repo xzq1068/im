@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::future::Future;
 use anyhow::anyhow;
+use axum::error_handling::HandleError;
 use axum::http::header::AUTHORIZATION;
 use axum::http::HeaderMap;
 use axum::Json;
@@ -10,7 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use common::util::jwt;
 use crate::db::user::User;
-use crate::error::HandlerError;
+use crate::error::{HandlerError};
 
 use crate::handler::{ ResponseResult};
 use crate::redis::redis_client::RedisOps;
@@ -22,8 +23,12 @@ pub struct LoginReq {
     pub credential: String,
 }
 
+pub async fn test()->Result<Json<ResponseResult<'static,String>>,HandlerError>{
 
-pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) -> anyhow::Result<Json<ResponseResult<'static,String>>,Json<ResponseResult<'static,String>>> {
+    Err(HandlerError::UserNotFound)
+}
+
+pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) ->Result<Json<ResponseResult<'static,String>>,anyhow::Error> {
     //1. 查看缓存是否命中
     let redis_ops = RedisOps::connect().await.unwrap();
 
@@ -45,12 +50,12 @@ pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) -> anyhow::
         }
     }
 
-    // let user = match User::get_by_account_id(login_req.account_id).await {
-    //     Ok(user) => user,
-    //     Err(err) => {
-    //         return Err("");
-    //     }
-    // };
+    let user = match User::get_by_account_id(login_req.account_id).await {
+        Ok(user) => user,
+        Err(err) => {
+            return Err(anyhow!(HandlerError::UserNotFound));
+        }
+    };
 
     Ok(Json(
         ResponseResult {
