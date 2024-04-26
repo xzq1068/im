@@ -1,9 +1,7 @@
 use std::error::Error;
-use axum::Json;
-use chrono::{TimeZone, Utc};
-use log::error;
+
+use chrono::TimeZone;
 use serde::{Deserialize, Serialize};
-use crate::error::HandlerError;
 
 pub mod user;
 
@@ -18,14 +16,3 @@ pub struct ResponseResult<'s,T> where T: Send + Sync
    pub data: T,
 
 }
-
-
-// pub async fn global_error_handler(error: HandlerError) ->Json<ResponseResult<'static,()>>
-// {
-//     Json(ResponseResult {
-//         code: error.code.parse().unwrap(),
-//         message: error.message,
-//         data: (),
-//         timestamp: Utc::now().timestamp(),
-//     })
-// }

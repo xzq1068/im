@@ -28,7 +28,7 @@ pub async fn test()->Result<Json<ResponseResult<'static,String>>,HandlerError>{
     Err(HandlerError::UserNotFound)
 }
 
-pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) ->Result<Json<ResponseResult<'static,String>>,anyhow::Error> {
+pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) ->Result<Json<ResponseResult<'static,String>>,HandlerError> {
     //1. 查看缓存是否命中
     let redis_ops = RedisOps::connect().await.unwrap();
 
@@ -53,7 +53,7 @@ pub async fn login(header_map: HeaderMap, login_req: Json<LoginReq>) ->Result<Js
     let user = match User::get_by_account_id(login_req.account_id).await {
         Ok(user) => user,
         Err(err) => {
-            return Err(anyhow!(HandlerError::UserNotFound));
+            return Err(HandlerError::UserNotFound);
         }
     };
 
