@@ -24,6 +24,7 @@ async fn main() {
         .route("/test", get(handler::user::test))
         .layer(
             ServiceBuilder::new()
+                // .layer(HandleErrorLayer::new(handler::handler_error))
                 .layer(TraceLayer::new_for_http())
         );
 
