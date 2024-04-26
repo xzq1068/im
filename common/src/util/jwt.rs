@@ -1,15 +1,15 @@
 use anyhow::anyhow;
-use base64::Engine;
+use base64::{ Engine};
 use base64::prelude::BASE64_URL_SAFE;
 use chrono::Utc;
-use jsonwebtoken::{DecodingKey, Validation};
+use jsonwebtoken::{DecodingKey, encode, EncodingKey, get_current_timestamp, Header, Validation};
 
 pub type Result<T> = anyhow::Result<T>;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 struct Claims {
     /// Optional. Audience
-    aud: u64,
+    aud: i64,
     /// Required (validate_exp defaults to true in validation). Expiration time (as UTC timestamp)
     exp: u64,
     /// Optional. Issued at (as UTC timestamp)
@@ -23,7 +23,7 @@ struct Claims {
 }
 
 #[inline]
-pub fn audience_of_token(token: &str) -> Result<u64> {
+pub fn audience_of_token(token: &str) -> Result<i64> {
      let payload = match token.split(".").nth(1) {
         None => {return Err(anyhow!("not payload"))}
         Some(payload) => payload,
@@ -37,7 +37,7 @@ pub fn audience_of_token(token: &str) -> Result<u64> {
 }
 
 #[inline]
-pub async fn verify_token(token: &str, key: &[u8], audience: u64) -> anyhow::Result<()> {
+pub async fn verify_token(token: &str, key: &[u8], audience: i64) -> anyhow::Result<()> {
     let res = jsonwebtoken::decode::<Claims>(
         &token,
         &DecodingKey::from_secret(key),
@@ -54,4 +54,24 @@ pub async fn verify_token(token: &str, key: &[u8], audience: u64) -> anyhow::Res
     }
 
     Ok(())
+}
+
+#[inline]
+pub fn simple_token(key:&[u8],audience:i64) -> String {
+    let t = get_current_timestamp();
+
+    encode(
+        &Header::default(),
+        &Claims {
+            aud: audience,
+            exp: t + 7 * 24 * 60 * 60,
+            iat: t,
+            iss: "PRIM".to_string(),
+            nbf: t,
+            sub: "".to_string(),
+        },
+        &EncodingKey::from_secret(key),
+    ).unwrap()
+
+
 }

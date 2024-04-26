@@ -8,6 +8,7 @@ use crate::handler::ResponseResult;
 pub enum HandlerError{
     ServerError,
     UserNotFound,
+    UserAuthFail,
 }
 
 impl HandlerError{
@@ -15,6 +16,7 @@ impl HandlerError{
         match self {
             HandlerError::ServerError => HandlerErrorObj { code: "api-1000", message:"服务器异常" },
             HandlerError::UserNotFound => HandlerErrorObj { code: "api-1001", message:"用户找不到" },
+            HandlerError::UserAuthFail => HandlerErrorObj { code: "api-1002", message:"用户鉴权失败" },
         }
     }
 }

@@ -23,3 +23,7 @@ anyhow = { workspeace = true }
 chrono = { workspeace = true ,features = ["serde"]}
 num-derive =  { workspeace = true }
 serde_json =  { workspeace = true }
+hmac = { workspeace = true }
+sha2 = { workspeace = true }
+hex = { workspeace = true }
+uuid = { workspeace = true ,features = ["v4"]}
