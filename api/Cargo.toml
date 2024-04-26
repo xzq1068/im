@@ -27,3 +27,5 @@ hmac = { workspeace = true }
 sha2 = { workspeace = true }
 hex = { workspeace = true }
 uuid = { workspeace = true ,features = ["v4"]}
+prost = { workspeace = true }
+tonic = { workspeace = true }

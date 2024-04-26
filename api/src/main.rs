@@ -11,6 +11,7 @@ mod redis;
 mod db;
 mod handler;
 mod error;
+mod rpc;
 
 
 #[tokio::main]
