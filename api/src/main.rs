@@ -1,5 +1,6 @@
 use axum::{Router, ServiceExt};
 use axum::routing::{get, post};
+use log::info;
 use tower::ServiceBuilder;
 use tower_http::trace::TraceLayer;
 
@@ -31,6 +32,8 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind(&API_CONFIG.server.address).await.unwrap();
 
     server_start_log();
+
+
 
     axum::serve(listener, app).await.unwrap();
 }

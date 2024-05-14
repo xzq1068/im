@@ -15,6 +15,7 @@ toml = { workspeace = true }
 log = { workspeace = true }
 tracing = { workspeace = true,features = [] }
 tracing-subscriber = { workspeace = true }
+tracing-appender = { workspeace = true }
 serde = { workspeace = true, features = ["derive"] }
 lazy_static = { workspeace = true }
 sqlx = {workspeace = true, features = ["runtime-tokio-rustls", "postgres", "chrono"]}
