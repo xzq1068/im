@@ -1,8 +1,7 @@
 use anyhow::anyhow;
 use redis::{AsyncCommands, Client, FromRedisValue, RedisResult};
 use redis::aio::MultiplexedConnection;
-use crate::error;
-use crate::error::HandlerError;
+
 use crate::init::API_CONFIG;
 
 type Result<T> = anyhow::Result<T>;
