@@ -3,7 +3,7 @@ use axum::routing::{get, post};
 use tower::ServiceBuilder;
 use tower_http::trace::TraceLayer;
 
-use crate::init::{init, server_start_log};
+use crate::init::{API_CONFIG, init, server_start_log};
 
 mod config;
 mod init;
@@ -28,8 +28,7 @@ async fn main() {
                 .layer(TraceLayer::new_for_http())
         );
 
-
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:7002").await.unwrap();
+    let listener = tokio::net::TcpListener::bind(&API_CONFIG.server.address).await.unwrap();
 
     server_start_log();
 
