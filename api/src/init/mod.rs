@@ -39,11 +39,10 @@ pub(super) fn init() {
 
 
     //1. 日志初始化
-    let subscriber =tracing_subscriber::fmt()
+    let subscriber = tracing_subscriber::fmt()
         .with_max_level(tracing::Level::DEBUG) // 定义 span 生命周期事件的记录
         // .with_writer(file_writer)
         .init();
-
 }
 
 pub(super) fn server_start_log() {
@@ -52,4 +51,20 @@ pub(super) fn server_start_log() {
 
     println!("{}", common::banner::api_banner());
     info!("✅ Api Server start success, {}",API_CONFIG.server.address);
+}
+
+#[cfg(test)]
+mod tests {
+    use std::thread;
+
+    #[test]
+    fn test_1() {
+        let handler=thread::spawn(|| {
+            let v1 = 2;
+            let v2 = 3;
+            println!("hello,thread")
+        });
+
+        handler.join().unwrap();
+    }
 }
